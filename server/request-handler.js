@@ -1,6 +1,7 @@
 var fs = require("fs");
 var url = require("url");
 var comments = JSON.parse(fs.readFileSync("data.json"));
+// comments.results = comments.results.reverse();
 
 /*************************************************************
 
@@ -36,13 +37,24 @@ var requestHandler  = function(request, response) {
 
   if (request.method === 'OPTIONS') {
     body = '';
+    var statusCode = 200;
+    var headers = defaultCorsHeaders;
+    headers['Content-Type'] = "application/json";
+    response.writeHead(statusCode, headers);
+    response.end(body);
   }
 
   if (request.method === 'GET') {
     var requestUrl = url.parse(request.url);
+    var statusCode = 404;
     if (requestUrl.pathname === "/classes/messages") {
+    var statusCode = 200;
       var body = JSON.stringify(comments);
     }
+    var headers = defaultCorsHeaders;
+    headers['Content-Type'] = "application/json";
+    response.writeHead(statusCode, headers);
+    response.end(body);
   }
 
 
@@ -54,33 +66,20 @@ var requestHandler  = function(request, response) {
       obj = JSON.parse(chunk);
       obj.createdAt = createdAt;
       obj.updatedAt = createdAt;
-      obj.objectId =  "ihZH4lbD3J"; //objectId.toString();
+      obj.objectId =  Date.now().toString(); //objectId.toString();
       comments.results.unshift(obj);
-      console.log(comments.results[0]);
+      // console.log(comments.results[0]);
       // var body = JSON.stringify(comments);
     });
     request.on('end', function() {
-      console.log('end')
-      response.writeHead(200, defaultCorsHeaders);
+      response.writeHead(201, defaultCorsHeaders);
       var res = {
         status  : 200,
         success : "Updated Successfully"
       };
-      // response.end(JSON.stringify(comments));
-      response.end()
+      response.end(JSON.stringify(comments));
     });
   }
-
-
-
-  console.log("Serving request type " + request.method + " for url " + request.url);
-
-  var statusCode = 200;
-  var headers = defaultCorsHeaders;
-  headers['Content-Type'] = "application/json";
-  response.writeHead(statusCode, headers);
-  response.end(body);
-
   // The outgoing status.
 
   // See the note below about CORS headers.
