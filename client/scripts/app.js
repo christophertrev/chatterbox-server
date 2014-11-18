@@ -44,15 +44,15 @@ $(function() {
         url: app.server,
         type: 'POST',
         data: JSON.stringify(data),
-        contentType: 'application/json',
+        // contentType: 'json',
         success: function (data) {
-          console.log(data);
           console.log('chatterbox: Message sent');
           // Trigger a fetch to update the messages, pass true to animate
           app.fetch();
         },
         error: function (data) {
-          console.log(data)
+          console.log(data);
+          debugger
           console.error('chatterbox: Failed to send message');
         }
       });
@@ -64,7 +64,6 @@ $(function() {
         contentType: 'application/json',
         data: { order: '-createdAt'},
         success: function(data) {
-          console.log('data  =' + JSON.stringify(data));
           console.log('chatterbox: Messages fetched');
 
           // Don't bother if we have nothing to work with
@@ -87,7 +86,6 @@ $(function() {
           }
         },
         error: function(data) {
-          console.log(data)
           console.error('chatterbox: Failed to fetch messages');
         }
       });

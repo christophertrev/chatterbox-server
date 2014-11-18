@@ -39,35 +39,60 @@ var requestHandler  = function(request, response) {
   }
 
   if (request.method === 'GET') {
-    console.log("inGet");
     var requestUrl = url.parse(request.url);
-    console.log(requestUrl);
     if (requestUrl.pathname === "/classes/messages") {
-      console.log("setting body to " + comments);
       var body = JSON.stringify(comments);
     }
   }
 
+
   if (request.method === 'POST') {
-    console.log('post request');
+    var obj;
+    var createdAt = updatedAt = new Date().toISOString();
+    var objectId = Date.now();
+    request.on('data', function (chunk) {
+      obj = JSON.parse(chunk);
+      obj.createdAt = createdAt;
+      obj.updatedAt = createdAt;
+      obj.objectId =  "ihZH4lbD3J"; //objectId.toString();
+      comments.results.unshift(obj);
+      console.log(comments.results[0]);
+      // var body = JSON.stringify(comments);
+    });
+    request.on('end', function() {
+      console.log('end')
+      response.writeHead(200, defaultCorsHeaders);
+      var res = {
+        status  : 200,
+        success : "Updated Successfully"
+      };
+      // response.end(JSON.stringify(comments));
+      response.end()
+    });
   }
 
+
+
   console.log("Serving request type " + request.method + " for url " + request.url);
-  // The outgoing status.
+
   var statusCode = 200;
+  var headers = defaultCorsHeaders;
+  headers['Content-Type'] = "application/json";
+  response.writeHead(statusCode, headers);
+  response.end(body);
+
+  // The outgoing status.
 
   // See the note below about CORS headers.
-  var headers = defaultCorsHeaders;
 
   // Tell the client we are sending them plain text.
   //
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
-  headers['Content-Type'] = "application/json";
 
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
-  response.writeHead(statusCode, headers);
+
 
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
@@ -76,7 +101,6 @@ var requestHandler  = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end(body);
 };
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
