@@ -47,16 +47,24 @@ var requestHandler  = function(request, response) {
   if (request.method === 'GET') {
     var requestUrl = url.parse(request.url);
     var statusCode = 404;
+    var headers = defaultCorsHeaders;
+    headers['Content-Type'] = "application/json";
     if (requestUrl.pathname === "/classes/messages") {
       statusCode = 200;
       var body = JSON.stringify(comments);
     }
-    if (requestUrl.pathname === "/classes/room1") {
+    else if (requestUrl.pathname === "/classes/room1") {
       statusCode = 200;
       var body = JSON.stringify(comments);
     }
-    var headers = defaultCorsHeaders;
-    headers['Content-Type'] = "application/json";
+    else if (requestUrl.pathname.charAt(0) === "/") {
+      console.log(requestUrl.pathname.slice(1));
+      var doc = fs.readFileSync("../client" + requestUrl.pathname);
+      statusCode = 200;
+      headers['Content-Type'] = "text/html";
+       // response.write('hello');
+      body=doc;
+    }
     response.writeHead(statusCode, headers);
     response.end(body);
   }
