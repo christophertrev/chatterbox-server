@@ -44,7 +44,7 @@ $(function() {
         url: app.server,
         type: 'POST',
         data: JSON.stringify(data),
-        // contentType: 'json',
+         contentType: 'application/json',
         success: function (data) {
           console.log('chatterbox: Message sent');
           // Trigger a fetch to update the messages, pass true to animate

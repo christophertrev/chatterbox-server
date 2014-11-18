@@ -1,6 +1,6 @@
 var fs = require("fs");
 var url = require("url");
-var comments = JSON.parse(fs.readFileSync("data.json"));
+var comments = JSON.parse(fs.readFileSync("./data.json"));
 // comments.results = comments.results.reverse();
 
 /*************************************************************
@@ -59,6 +59,7 @@ var requestHandler  = function(request, response) {
     }
     else if (requestUrl.pathname.charAt(0) === "/") {
       console.log(requestUrl.pathname.slice(1));
+
       var doc = fs.readFileSync("../client" + requestUrl.pathname);
       statusCode = 200;
       if (/\.(css)$/.test(requestUrl.pathname)){
