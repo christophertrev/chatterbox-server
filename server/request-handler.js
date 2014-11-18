@@ -48,7 +48,11 @@ var requestHandler  = function(request, response) {
     var requestUrl = url.parse(request.url);
     var statusCode = 404;
     if (requestUrl.pathname === "/classes/messages") {
-    var statusCode = 200;
+      statusCode = 200;
+      var body = JSON.stringify(comments);
+    }
+    if (requestUrl.pathname === "/classes/room1") {
+      statusCode = 200;
       var body = JSON.stringify(comments);
     }
     var headers = defaultCorsHeaders;
