@@ -61,7 +61,12 @@ var requestHandler  = function(request, response) {
       console.log(requestUrl.pathname.slice(1));
       var doc = fs.readFileSync("../client" + requestUrl.pathname);
       statusCode = 200;
-      headers['Content-Type'] = "text/html";
+      if (/\.(css)$/.test(requestUrl.pathname)){
+        headers['Content-Type'] ='text/css';
+
+      }else{
+        headers['Content-Type'] = "text/html";
+      }
        // response.write('hello');
       body=doc;
     }
@@ -88,7 +93,9 @@ var requestHandler  = function(request, response) {
       var res = {
         status  : 200,
         success : "Updated Successfully"
+
       };
+      fs.writeFile("data.json", JSON.stringify(comments));
       response.end(JSON.stringify(comments));
     });
   }
